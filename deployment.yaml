@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: php-web-app
+  template:
+    metadata:
+      labels:
+        app: php-web-app
+    spec:
+      containers:
+      - name: php-web-container
+        image: prajwaljavli/php-web-app2:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: DB_HOST
+          value: database-1.clecii4scanf.ap-south-1.rds.amazonaws.com
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_DATABASE
+          value: userdata
+        - name: DB_USERNAME
+          value: prajwal
+        - name: DB_PASSWORD
+          value: Prajwal23
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-web-service
+spec:
+  type: NodePort
+  selector:
+    app: php-web-app
+  ports:
+  - port: 80           # Service port
+    targetPort: 80     # Container port
+    nodePort: 30080    # Exposed on the node (range: 30000–32767)
